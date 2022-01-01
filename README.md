@@ -1,6 +1,6 @@
 # bijous
 
-寻找文本中的 bijous，包括：新词发现，命名实体识别，关系提取等。
+寻找文本中的 bijous，包括：新词发现、语义搜索、命名实体识别、关系提取、事件提取等。
 
 ## 新词发现
 
@@ -12,7 +12,7 @@ file = '/data/comments.txt'
 TOP = 10000
 MAX_LEN = 5
 MIN_FREQ = 10
-WITH_SCORE = False
+WITH_SCORE = True
 
 extracted = extract_words(file, TOP, max_len=MAX_LEN, min_count=MIN_FREQ, with_score=WITH_SCORE)
 print(len(extracted))
@@ -29,7 +29,7 @@ for k, score in extracted:
 
 ## 句子相似度
 
-可考虑使用 [sentence_bert_chinese](https://github.com/renmada/sentence_bert_chinese)，它使用 `STS` 和 `NLI` 任务的数据集在 [sentence-transformers](https://github.com/UKPLab/sentence-transformers) 上训练。对于句子的向量化效果优于 [RoFormer-Sim](https://kexue.fm/archives/8454) 模型。
+可考虑使用 [sentence_bert_chinese](https://github.com/renmada/sentence_bert_chinese)，它使用 `STS` 和 `NLI` 任务的数据集在 [sentence-transformers](https://github.com/UKPLab/sentence-transformers) 上训练，对于句子的向量化效果优于 [RoFormer-Sim](https://kexue.fm/archives/8454) 模型。
 
 示例（在鲁迅的25.8k个句子中寻找最相似者）：
 
@@ -54,3 +54,20 @@ query: 茴香豆是怎样写的？
 result: 茴香豆的茴字，怎样写的？” (呐喊/孔乙己)
 score: 0.7946927
 ```
+## 文本分类
+
+### 使用 LSTM 实现简单二分类任务
+
+```
+label: 0, prob: 0.005,  史上最烂的电影，没有之一
+label: 1, prob: 0.997,  我最喜欢的电影，太棒了
+label: 0, prob: 0.012,  不打一星对不起我的电影票钱
+label: 0, prob: 0.008,  无语
+label: 0, prob: 0.010,  无力吐槽
+label: 0, prob: 0.231,  不是我喜欢的类型
+label: 1, prob: 0.968,  要推荐给所有朋友
+label: 0, prob: 0.229,  不会推荐给任何朋友
+label: 1, prob: 0.935,  居然看哭了！
+label: 0, prob: 0.039,  我想我以后不会再看这个导演的作品了
+```
+

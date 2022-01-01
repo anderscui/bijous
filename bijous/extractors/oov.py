@@ -1,4 +1,5 @@
 # coding=utf-8
+import json
 import time
 
 from collections import Counter
@@ -119,9 +120,9 @@ def filter_word(word: str, known_words=None):
         return False
     if any(kw in word for kw in ' ,，、.。?？!！"“”'):
         return False
-    if word.startswith(tuple('>》)）:：')) or word.endswith(tuple('<《(（')):
+    if word.startswith(tuple('>》)）」:：')) or word.endswith(tuple('<《(（「')):
         return False
-    if len([c for c in word if c in '>》)）']) != len([c for c in word if c in '<《(（']):
+    if len([c for c in word if c in '>》)）」']) != len([c for c in word if c in '<《(（「']):
         return False
     return True
 
@@ -185,23 +186,28 @@ def is_in_jieba(word):
 
 
 if __name__ == '__main__':
-    file = '/data/comments.txt'
+    file = '/Users/andersc/data/corpus/豆瓣读书评论/comments_1m.txt'
 
-    TOP = 10000
-    MAX_LEN = 5
-    MIN_FREQ = 10
-    with_score = False
+    for i in range(5):
+        file = f'/Users/andersc/data/corpus/豆瓣读书评论/comments_{i}.txt'
 
-    extracted = extract_words(file, TOP, max_len=MAX_LEN, min_count=MIN_FREQ, with_score=with_score)
-    print(len(extracted))
+        TOP = 20000
+        MAX_LEN = 5
+        MIN_FREQ = 15
+        WITH_SCORE = True
 
-    if with_score:
-        for k, score in extracted:
-            if is_in_jieba(k):
-                continue
-            print(k, score)
-    else:
-        for k in extracted:
-            if is_in_jieba(k):
-                continue
-            print(k)
+        extracted = extract_words(file, top=TOP, max_len=MAX_LEN, min_count=MIN_FREQ, with_score=WITH_SCORE)
+        print(len(extracted))
+
+        json.dump(extracted, open(f'extracted_words_{i}.json', 'w'))
+
+        if WITH_SCORE:
+            for k, score in extracted:
+                if is_in_jieba(k):
+                    continue
+                print(k, score)
+        else:
+            for k in extracted:
+                if is_in_jieba(k):
+                    continue
+                print(k)
